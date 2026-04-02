@@ -16,6 +16,7 @@ export function CareSnapshotPage() {
   const { user, profile, canEdit } = useAuth();
   const data = useCareDataBundle();
   const [timelineFilter, setTimelineFilter] = useState<'all' | 'clinical' | 'therapy' | 'visits' | 'side-effects' | 'activities'>('all');
+  const [showFullTimeline, setShowFullTimeline] = useState(false);
   const [status, setStatus] = useState(data.pulse.careStatus);
   const [oneBigThing, setOneBigThing] = useState(data.pulse.oneBigThing);
   const [updatedBy, setUpdatedBy] = useState(data.pulse.updatedBy === 'System' ? profile?.displayName || 'Family Member' : data.pulse.updatedBy);
@@ -54,7 +55,7 @@ export function CareSnapshotPage() {
   ]
     .filter((item) => timelineFilter === 'all' || item.category === timelineFilter)
     .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
-    .slice(0, 8);
+    .slice(0, showFullTimeline ? 8 : 4);
 
   useEffect(() => {
     setStatus(data.pulse.careStatus);
@@ -87,77 +88,103 @@ export function CareSnapshotPage() {
         <Link to="/weekly-report?print=1" className="chip">Print Weekly Report</Link>
       </div>
 
-      <h3>Quick Family Summary</h3>
-      <div className="summary-grid">
-        {summaryCards.map((card) => (
-          <article className="summary-card" key={card.label}>
-            <p>{card.label}</p>
-            <strong>{card.value}</strong>
-          </article>
-        ))}
+      <div className="snapshot-focus" aria-label="Care snapshot at a glance">
+        <article className="snapshot-focus-item">
+          <p>Current Status</p>
+          <strong>{data.pulse.careStatus}</strong>
+        </article>
+        <article className="snapshot-focus-item">
+          <p>One Big Thing</p>
+          <strong>{data.pulse.oneBigThing || 'No weekly focus yet'}</strong>
+        </article>
+        <article className="snapshot-focus-item">
+          <p>Last Updated</p>
+          <strong>{formatTimestamp(data.pulse.updatedAt)}</strong>
+        </article>
       </div>
 
-      <h3>7-Day Trends</h3>
-      <div className="summary-grid summary-grid-trends">
-        {trends.map((trend) => (
-          <article className="summary-card" key={trend.label}>
-            <p>{trend.label}</p>
-            <strong>{trend.value}</strong>
-          </article>
-        ))}
-      </div>
+      <section className="section-block" aria-label="Quick family summary">
+        <h3>Quick Family Summary</h3>
+        <div className="summary-grid">
+          {summaryCards.map((card) => (
+            <article className="summary-card" key={card.label}>
+              <p>{card.label}</p>
+              <strong>{card.value}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
 
-      <h3>Recent Activity Timeline</h3>
-      <div className="filter-row" role="tablist" aria-label="Timeline filters">
-        <button type="button" className={timelineFilter === 'all' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('all')}>All</button>
-        <button type="button" className={timelineFilter === 'clinical' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('clinical')}>Clinical</button>
-        <button type="button" className={timelineFilter === 'therapy' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('therapy')}>Therapy</button>
-        <button type="button" className={timelineFilter === 'visits' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('visits')}>Visits</button>
-        <button type="button" className={timelineFilter === 'side-effects' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('side-effects')}>Side Effects</button>
-        <button type="button" className={timelineFilter === 'activities' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('activities')}>Activities</button>
-      </div>
-      <ul className="feed timeline-feed">
-        {recentTimeline.map((item) => (
-          <li key={item.id}>
-            <strong>{item.label}</strong>
-            <br />
-            <small>{formatTimestamp(item.createdAt)}</small>
-          </li>
-        ))}
-      </ul>
+      <section className="section-block" aria-label="Seven day trends">
+        <h3>7-Day Trends</h3>
+        <div className="summary-grid summary-grid-trends">
+          {trends.map((trend) => (
+            <article className="summary-card" key={trend.label}>
+              <p>{trend.label}</p>
+              <strong>{trend.value}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
 
-      <h3>Current Care Snapshot</h3>
-      {!canEdit ? <p className="status-error">Your role is viewer. Snapshot editing is disabled.</p> : null}
+      <section className="section-block" aria-label="Recent timeline">
+        <h3>Recent Activity Timeline</h3>
+        <div className="filter-row" role="tablist" aria-label="Timeline filters">
+          <button type="button" className={timelineFilter === 'all' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('all')}>All</button>
+          <button type="button" className={timelineFilter === 'clinical' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('clinical')}>Clinical</button>
+          <button type="button" className={timelineFilter === 'therapy' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('therapy')}>Therapy</button>
+          <button type="button" className={timelineFilter === 'visits' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('visits')}>Visits</button>
+          <button type="button" className={timelineFilter === 'side-effects' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('side-effects')}>Side Effects</button>
+          <button type="button" className={timelineFilter === 'activities' ? 'button-secondary filter-active' : 'button-secondary'} onClick={() => setTimelineFilter('activities')}>Activities</button>
+        </div>
+        <ul className="feed timeline-feed">
+          {recentTimeline.map((item) => (
+            <li key={item.id}>
+              <strong>{item.label}</strong>
+              <br />
+              <small>{formatTimestamp(item.createdAt)}</small>
+            </li>
+          ))}
+        </ul>
+        <button type="button" className="button-secondary" onClick={() => setShowFullTimeline((current) => !current)}>
+          {showFullTimeline ? 'Show Fewer Items' : 'Show More Items'}
+        </button>
+      </section>
 
-      <label htmlFor="care-status">Care Status</label>
-      <select
-        id="care-status"
-        value={status}
-        disabled={!canEdit}
-        onChange={(event) => setStatus(event.target.value as 'Stable' | 'Alert')}
-      >
-        <option value="Stable">Stable</option>
-        <option value="Alert">Alert</option>
-      </select>
+      <section className="section-block" aria-label="Current care snapshot">
+        <h3>Current Care Snapshot</h3>
+        {!canEdit ? <p className="status-error">Your role is viewer. Snapshot editing is disabled.</p> : null}
 
-      <label htmlFor="one-big-thing">One Big Thing This Week</label>
-      <textarea
-        id="one-big-thing"
-        rows={3}
-        value={oneBigThing}
-        disabled={!canEdit}
-        onChange={(event) => setOneBigThing(event.target.value)}
-      />
+        <label htmlFor="care-status">Care Status</label>
+        <select
+          id="care-status"
+          value={status}
+          disabled={!canEdit}
+          onChange={(event) => setStatus(event.target.value as 'Stable' | 'Alert')}
+        >
+          <option value="Stable">Stable</option>
+          <option value="Alert">Alert</option>
+        </select>
 
-      <label htmlFor="updated-by">Updated By</label>
-      <input
-        id="updated-by"
-        value={updatedBy}
-        disabled={!canEdit}
-        onChange={(event) => setUpdatedBy(event.target.value)}
-      />
+        <label htmlFor="one-big-thing">One Big Thing This Week</label>
+        <textarea
+          id="one-big-thing"
+          rows={3}
+          value={oneBigThing}
+          disabled={!canEdit}
+          onChange={(event) => setOneBigThing(event.target.value)}
+        />
 
-      <button type="button" onClick={save} disabled={!canEdit}>Save Care Snapshot</button>
+        <label htmlFor="updated-by">Updated By</label>
+        <input
+          id="updated-by"
+          value={updatedBy}
+          disabled={!canEdit}
+          onChange={(event) => setUpdatedBy(event.target.value)}
+        />
+
+        <button type="button" onClick={save} disabled={!canEdit}>Save Care Snapshot</button>
+      </section>
     </section>
   );
 }
