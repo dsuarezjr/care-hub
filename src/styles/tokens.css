@@ -1,0 +1,39 @@
+:root {
+  color-scheme: light;
+  --bg-1: #f4f8fb;
+  --bg-2: #dce8f1;
+  --surface: #ffffff;
+  --surface-strong: #e8f1f8;
+  --text: #102a43;
+  --text-soft: #3e5f7d;
+  --brand: #0f2438;
+  --brand-strong: #081826;
+  --accent: #d9822b;
+  --danger: #ad1f1f;
+  --border: #7e9bb5;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --shadow: 0 10px 30px rgba(16, 42, 67, 0.12);
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --touch: 48px;
+  --font-main: "Source Sans 3", "Segoe UI", Tahoma, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-main);
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(217, 130, 43, 0.2), transparent 32%),
+    radial-gradient(circle at 85% 5%, rgba(15, 36, 56, 0.2), transparent 30%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+}

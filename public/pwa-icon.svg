@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ramon Care Hub icon">
+  <rect width="256" height="256" rx="52" fill="#0f2438" />
+  <circle cx="128" cy="96" r="44" fill="#d9822b" />
+  <path d="M48 190c23-36 53-54 80-54s57 18 80 54" fill="none" stroke="#f4f8fb" stroke-width="16" stroke-linecap="round" />
+</svg>
