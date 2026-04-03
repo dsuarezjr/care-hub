@@ -43,7 +43,7 @@ create table if not exists public.care_pulse (
 create table if not exists public.care_entries (
   id text primary key,
   family_id text not null,
-  entry_type text not null check (entry_type in ('clinicalLog', 'sideEffects', 'visitLog', 'therapy', 'activities', 'medications')),
+  entry_type text not null check (entry_type in ('clinicalLog', 'sideEffects', 'visitLog', 'therapy', 'activities', 'medications', 'healthIssues')),
   payload jsonb not null,
   created_at timestamptz not null,
   created_by text not null default 'unknown',
@@ -53,7 +53,7 @@ create table if not exists public.care_entries (
 alter table public.care_entries drop constraint if exists care_entries_entry_type_check;
 alter table public.care_entries
   add constraint care_entries_entry_type_check
-  check (entry_type in ('clinicalLog', 'sideEffects', 'visitLog', 'therapy', 'activities', 'medications'));
+  check (entry_type in ('clinicalLog', 'sideEffects', 'visitLog', 'therapy', 'activities', 'medications', 'healthIssues'));
 
 create index if not exists care_entries_family_id_idx on public.care_entries (family_id);
 create index if not exists care_entries_entry_type_idx on public.care_entries (entry_type);
