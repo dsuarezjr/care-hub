@@ -2,6 +2,7 @@ import type {
   ActivityEntry,
   CareDataBundle,
   ClinicalLogEntry,
+  HealthIssue,
   Medication,
   PulseDashboard,
   SideEffectReport,
@@ -35,7 +36,8 @@ export function createDefaultCareData(): CareDataBundle {
     sideEffects: [],
     visitLog: [],
     therapy: [],
-    activities: []
+    activities: [],
+    healthIssues: []
   };
 }
 
@@ -51,6 +53,7 @@ function normalizeCareData(data: Partial<CareDataBundle>): CareDataBundle {
     visitLog: data.visitLog || defaults.visitLog,
     therapy: data.therapy || defaults.therapy,
     activities: data.activities || defaults.activities,
+    healthIssues: data.healthIssues || defaults.healthIssues,
     pulse: {
       ...defaults.pulse,
       ...data.pulse
@@ -166,6 +169,23 @@ export function removeMedication(medicationId: string): CareDataBundle {
   const next = {
     ...current,
     medications: current.medications.filter((item) => item.id !== medicationId)
+  };
+  saveCareData(next);
+  return next;
+}
+
+export function addHealthIssue(issue: HealthIssue): CareDataBundle {
+  const current = loadCareData();
+  const next = { ...current, healthIssues: [issue, ...current.healthIssues] };
+  saveCareData(next);
+  return next;
+}
+
+export function removeHealthIssue(issueId: string): CareDataBundle {
+  const current = loadCareData();
+  const next = {
+    ...current,
+    healthIssues: current.healthIssues.filter((item) => item.id !== issueId)
   };
   saveCareData(next);
   return next;

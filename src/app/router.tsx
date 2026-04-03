@@ -4,6 +4,7 @@ import { ActivitiesPage } from '../features/activities/ActivitiesPage';
 import { ClinicalLogPage } from '../features/clinical-log/ClinicalLogPage';
 import { ExportPage } from '../features/export/ExportPage';
 import { VisitLogPage } from '../features/family-visit-log/VisitLogPage';
+import { HealthIssuesPage } from '../features/health-issues/HealthIssuesPage';
 import { MedicationMirrorPage } from '../features/medication-mirror/MedicationMirrorPage';
 import { ProfilePage } from '../features/profile/ProfilePage';
 import { CareSnapshotPage } from '../features/pulse-dashboard/PulseDashboardPage';
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
       { path: '/visit-log', element: <VisitLogPage /> },
       { path: '/therapy', element: <TherapyTrackerPage /> },
       { path: '/activities', element: <ActivitiesPage /> },
+      { path: '/health-issues', element: <HealthIssuesPage /> },
       { path: '/export', element: <ExportPage /> },
       { path: '/profile', element: <ProfilePage /> },
       { path: '/weekly-report', element: <WeeklyReportPage /> }

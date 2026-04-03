@@ -58,6 +58,14 @@ export interface ActivityEntry {
   createdBy: string;
 }
 
+export interface HealthIssue {
+  id: string;
+  title: string;
+  notes: string;
+  createdAt: string;
+  createdBy: string;
+}
+
 export interface CareDataBundle {
   pulse: PulseDashboard;
   clinicalLog: ClinicalLogEntry[];
@@ -66,6 +74,7 @@ export interface CareDataBundle {
   visitLog: VisitLogEntry[];
   therapy: TherapyEntry[];
   activities: ActivityEntry[];
+  healthIssues: HealthIssue[];
 }
 
 export interface FamilyProfile {

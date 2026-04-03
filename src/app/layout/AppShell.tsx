@@ -9,6 +9,7 @@ const navItems = [
   { to: '/visit-log', label: 'Visits' },
   { to: '/therapy', label: 'Therapy' },
   { to: '/activities', label: 'Activities' },
+  { to: '/health-issues', label: 'Health Issues' },
   { to: '/weekly-report', label: 'Report' },
   { to: '/export', label: 'Export' },
   { to: '/profile', label: 'Profile' }
