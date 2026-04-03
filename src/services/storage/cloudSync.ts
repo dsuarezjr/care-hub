@@ -3,6 +3,7 @@ import type {
   ActivityEntry,
   CareDataBundle,
   ClinicalLogEntry,
+  HealthIssue,
   Medication,
   PulseDashboard,
   SideEffectReport,
@@ -24,7 +25,7 @@ type SyncResult = {
   message: string;
 };
 
-type EntryType = 'clinicalLog' | 'sideEffects' | 'visitLog' | 'therapy' | 'activities' | 'medications';
+type EntryType = 'clinicalLog' | 'sideEffects' | 'visitLog' | 'therapy' | 'activities' | 'medications' | 'healthIssues';
 
 type EntryRow = {
   id: string;
@@ -125,7 +126,8 @@ function toEntryRows(bundle: CareDataBundle): EntryRow[] {
     ...mapEntries('sideEffects', bundle.sideEffects),
     ...mapEntries('visitLog', bundle.visitLog),
     ...mapEntries('therapy', bundle.therapy),
-    ...mapEntries('activities', bundle.activities)
+    ...mapEntries('activities', bundle.activities),
+    ...mapEntries('healthIssues', bundle.healthIssues)
   ];
 }
 
@@ -173,7 +175,8 @@ function mergeBundles(local: CareDataBundle, remote: CareDataBundle): CareDataBu
     sideEffects: mergeById(local.sideEffects, remote.sideEffects),
     visitLog: mergeById(local.visitLog, remote.visitLog),
     therapy: mergeById(local.therapy, remote.therapy),
-    activities: mergeById(local.activities, remote.activities)
+    activities: mergeById(local.activities, remote.activities),
+    healthIssues: mergeById(local.healthIssues, remote.healthIssues)
   };
 }
 
@@ -199,6 +202,9 @@ function bundleFromRows(rows: EntryRow[], pulseRow?: PulseRow | null): CareDataB
     if (row.entry_type === 'activities') {
       bundle.activities.push(row.payload as unknown as ActivityEntry);
     }
+    if (row.entry_type === 'healthIssues') {
+      bundle.healthIssues.push(row.payload as unknown as HealthIssue);
+    }
   });
 
   bundle.clinicalLog = sortByCreatedAtDesc(bundle.clinicalLog);
@@ -206,6 +212,7 @@ function bundleFromRows(rows: EntryRow[], pulseRow?: PulseRow | null): CareDataB
   bundle.visitLog = sortByCreatedAtDesc(bundle.visitLog);
   bundle.therapy = sortByCreatedAtDesc(bundle.therapy);
   bundle.activities = sortByCreatedAtDesc(bundle.activities);
+  bundle.healthIssues = sortByCreatedAtDesc(bundle.healthIssues);
 
   if (pulseRow) {
     bundle.pulse = {
